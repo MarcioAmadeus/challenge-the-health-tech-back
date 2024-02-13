@@ -47,8 +47,8 @@ export const Login = async (req: Request, res: Response) => {
     const payload = {
         id: user.id
     };
-    const token = sign(payload, "secret");
-
+    //console.log(process.env.SECRET_KEY)
+    const token = sign(payload, process.env.SECRET_KEY);
     res.cookie('jwt', token, {
         httpOnly: true,
         maxAge: 24* 60 * 60 * 1000 // day
@@ -63,7 +63,7 @@ export const AuthenticatedUser = async (req: Request, res: Response) => {
     try{
     const jwt = req.cookies['jwt'];
 
-    const payload: any = verify(jwt, "secret");
+    const payload: any = verify(jwt, process.env.SECRET_KEY);
 
     if (!payload){
         return res.status(401).send(
@@ -84,7 +84,7 @@ export const AuthenticatedUser = async (req: Request, res: Response) => {
 
 export const Logout = async (req: Request, res: Response) => {
     res.cookie('jwt',  {
-        maxAge: 0 // day
+        maxAge: 0 // 
     })
     res.send({message: 'success'}); 
 }
