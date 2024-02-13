@@ -70,3 +70,32 @@ export const Logout = async (req: Request, res: Response) => {
     })
     res.send({message: 'success'}); 
 }
+
+
+export const UpdateInfo = async (req: Request, res: Response) => {
+    const user = req['user'];
+
+    const repository = AppDataSource.getRepository(User);
+    repository.update(user.id, req.body);
+
+   const {password, ...data} = await repository.findOne({where:{id: user.id}});
+   res.send(data); 
+};
+
+export const UpdatePassword = async (req: Request, res: Response) => {
+    const user = req['user'];
+
+    if(req.body.password != req.body.passwordconfirm){
+        return res.status(400).send({message: "password not match"});
+    }
+
+    const repository = AppDataSource.getRepository(User);
+
+    repository.update(user.id, {
+        password: await bcryptjs.hash(req.body.password, 10)   
+    });
+
+   const {password, ...data} = await repository.findOne({where:{id: user.id}});
+   
+   res.send(data); 
+};
