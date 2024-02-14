@@ -29,7 +29,7 @@ export const Create = async (req: Request, res: Response) => {
         ...body,
         password: passwordhashed
     });
-    res.send(data);
+    res.status(200).send(data);
 };
 
 export const GetUser = async (req: Request, res: Response) => {
@@ -52,5 +52,15 @@ export const UpdateUser = async (req: Request, res: Response) => {
     
     const {password, ...data1} = await repository.findOne({where:{id: tempId}});
 
-    res.send(data1);
+    res.status(202).send(data1);
+};
+
+export const DeleteUser = async (req: Request, res: Response) => {
+    const {role_id, ...body} = req.body;
+   
+    
+    const repository = AppDataSource.getRepository(User);
+    const tempId = parseInt(req.params.id);
+    await repository.delete(tempId);
+    res.status(204).send(null);
 };
