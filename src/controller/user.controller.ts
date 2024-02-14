@@ -41,3 +41,16 @@ export const GetUser = async (req: Request, res: Response) => {
 
     res.send(data1);
 };
+
+export const UpdateUser = async (req: Request, res: Response) => {
+    const {role_id, ...body} = req.body;
+   
+    
+    const repository = AppDataSource.getRepository(User);
+    const tempId = parseInt(req.params.id);
+    await repository.update(tempId, body);
+    
+    const {password, ...data1} = await repository.findOne({where:{id: tempId}});
+
+    res.send(data1);
+};

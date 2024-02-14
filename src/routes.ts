@@ -1,6 +1,6 @@
 import { Router} from "express";
 import { UpdatePassword, UpdateInfo, Logout, AuthenticatedUser, Login, Register } from "./controller/auth.controller";
-import { GetUser, Create, Users } from "./controller/user.controller";
+import { UpdateUser, GetUser, Create, Users } from "./controller/user.controller";
 
 import { AuthMiddleware } from "./middleware/auth.middleware";
 
@@ -18,6 +18,8 @@ export const routes = (router: Router) => {
     router.get('/api/users',AuthMiddleware, Users);
     router.post('/api/users',AuthMiddleware, Create);
     router.get('/api/users/:id',AuthMiddleware, GetUser);
+    router.put('/api/users/:id',AuthMiddleware, UpdateUser);
+    
 
 
 } 
