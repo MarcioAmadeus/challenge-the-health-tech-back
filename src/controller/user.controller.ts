@@ -35,7 +35,9 @@ export const Create = async (req: Request, res: Response) => {
 export const GetUser = async (req: Request, res: Response) => {
     
     const repository = AppDataSource.getRepository(User);
-    const {password, ...data} = await repository.findOne({where:{id: parseInt(req.params.id)}});
+    const tempId = parseInt(req.params.id);
+    console.log(tempId);
+    const {password, ...data1} = await repository.findOne({where:{id: tempId}});
 
-    return data;
+    res.send(data1);
 };
