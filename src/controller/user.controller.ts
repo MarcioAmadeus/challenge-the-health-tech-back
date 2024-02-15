@@ -11,10 +11,11 @@ export const Users = async (req: Request, res: Response) => {
     const user = req['user'];
 
    const repository = AppDataSource.getRepository(User);
-   const users = await repository.find();
+   const users = await repository.find({
+        relations: ['role']
+   });
    res.send(users.map(u => {
     const {password, ...data} = u;
-
     return data;
    })); 
 };
@@ -27,7 +28,10 @@ export const Create = async (req: Request, res: Response) => {
     const repository = AppDataSource.getRepository(User);
     const {password, ...data} = await repository.save({
         ...body,
-        password: passwordhashed
+        password: passwordhashed,
+        role: {
+            id: role_id
+        } 
     });
     res.status(200).send(data);
 };
@@ -37,20 +41,24 @@ export const GetUser = async (req: Request, res: Response) => {
     const repository = AppDataSource.getRepository(User);
     const tempId = parseInt(req.params.id);
     console.log(tempId);
-    const {password, ...data1} = await repository.findOne({where:{id: tempId}});
+    const {password, ...data1} = await repository.findOne({where:{id: tempId}, relations: ['role']});
 
     res.send(data1);
 };
 
 export const UpdateUser = async (req: Request, res: Response) => {
     const {role_id, ...body} = req.body;
-   
     
     const repository = AppDataSource.getRepository(User);
     const tempId = parseInt(req.params.id);
-    await repository.update(tempId, body);
+    await repository.update(tempId, {
+        ...body,
+        role: {
+            id: role_id
+        } 
+    });
     
-    const {password, ...data1} = await repository.findOne({where:{id: tempId}});
+    const {password, ...data1} = await repository.findOne({where:{id: tempId}, relations: ['role']});
 
     res.status(202).send(data1);
 };
